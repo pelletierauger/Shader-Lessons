@@ -68,8 +68,8 @@ vec2 rotateUV(vec2 uv, float rotation, float mid) {
 }
 vec2 rotateUV2(vec2 uv, float rotation, float mid) {
     return vec2(
-      cos(rotation * uv.x/50. + sin(uv.x * 3e1)) * (uv.x - mid) + sin(rotation + sin(uv.x * 3e1)) * (uv.y - mid) + mid,
-      cos(rotation * uv.x/50. + cos(uv.y * 3e1)) * (uv.y - mid) - sin(rotation + sin(uv.x * 3e1)) * (uv.x - mid) + mid
+      cos(rotation * uv.x / 50. + sin(uv.x * 3e1)) * (uv.x - mid) + sin(rotation + sin(uv.x * 3e1)) * (uv.y - mid) + mid,
+      cos(rotation * uv.x / 50. + cos(uv.y * 3e1)) * (uv.y - mid) - sin(rotation + sin(uv.x * 3e1)) * (uv.x - mid) + mid
     );
 }
 void main() {
