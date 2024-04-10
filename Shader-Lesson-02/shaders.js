@@ -37,10 +37,10 @@ float circle(vec2 p, float radius, float smoothness) {
 }
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution;
-    float c1 = circle(uv - vec2(0.5, 0.5), 0.25, 0.05);
-    float c2 = circle(uv - vec2(0.5, 0.4), 0.25, 0.05);
-    c1 = c1 - c2;
-    gl_FragColor = vec4(vec3(c1), 1.0);
+    float sun = circle(uv - vec2(0.5, 0.5), 0.25, 0.05);
+    float moon = circle(uv - vec2(0.5, 0.4), 0.25, 0.05);
+    float eclipse = sun - moon;
+    gl_FragColor = vec4(vec3(eclipse), 1.0);
 }
 // endGLSL
 `);
