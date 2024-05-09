@@ -24,24 +24,24 @@ function setup() {
     background(0);
     fill(255, 50);
     noStroke();
-    // A simple circle
+    // Linear gradients
     setBothShaders(`
     // beginGLSL
     precision mediump float;
+    #define pi 3.1415926535897932384626433832795
     varying vec2 vTexCoord;
     uniform float time;
     uniform vec2 resolution;
-    float circle(vec2 p, float radius, float smoothness) {
-        float r = radius * 0.5;
-        float ratio = resolution.y / resolution.x;
-        float c = length(vec2(p.x / ratio, p.y)) - r;
-        return smoothstep(r + smoothness + 1e-7, r, c);
+    float map(float value, float min1, float max1, float min2, float max2) {
+        return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
     }
     void main() {
         vec2 uv = gl_FragCoord.xy / resolution;
-        // uv.x = uv.x + sin(time * 0.5 + uv.y * 5e1) * 0.01;
-        float c = circle(uv - vec2(0.5, 0.5), 0.25, 0.05);
-        gl_FragColor = vec4(vec3(c), 1.0);
+        float ratio = resolution.y / resolution.x;
+        uv = uv - 0.5;
+        uv.x /= ratio;
+        vec3 col = vec3(map(sin(uv.x * 5e1 + time * 0.5), -1.0, 1.0, 0., 1.));
+        gl_FragColor = vec4(col, 1.0);
     }
     // endGLSL
     `);
