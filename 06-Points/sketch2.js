@@ -1,22 +1,25 @@
 let looping = true;
 let keysActive = true;
-let socket, cnvs, gl, shaderProgram, time;
+let socket, cnvs, gl, shaderProgram, time, resolution;
 let drawCount = 0, drawIncrement = 1;
 let vertices, vbuffer, dotsVBuf;
 let currentProgram;
 let ratio;
 const seed = 10;
 const openSimplex = openSimplexNoise(seed);
-let resolution = 1;
 
 function setup() {
     socket = io.connect('http://localhost:8080');
     pixelDensity(1);
     noCanvas();
-    cnvs = document.getElementById('cnvs');
-    cnvs.width = window.innerWidth * resolution;
-    cnvs.height = window.innerHeight * resolution;
-    gl = cnvs.getContext('webgl', { preserveDrawingBuffer: true });
+        cnvs = createCanvas(windowWidth, windowWidth * 9 / 16, WEBGL);
+    canvasDOM = document.getElementById('defaultCanvas0');
+    // noCanvas();
+    // cnvs = document.getElementById('my_Canvas');
+    gl = canvas.getContext('webgl');
+    cnvs.width = window.innerWidth;
+    cnvs.height = window.innerHeight;
+    // gl = cnvs.getContext('webgl', { preserveDrawingBuffer: true });
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthMask(false);
@@ -27,17 +30,10 @@ function setup() {
     vbuffer = gl.createBuffer();
     frameRate(20);
     dotsVBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, dotsVBuf);
-
     shadersReadyToInitiate = true;
     initializeShaders();
-
     currentProgram = getProgram("smooth-dots");
     gl.useProgram(currentProgram);
-    var coord = gl.getAttribLocation(currentProgram, "coordinates");
-    gl.vertexAttribPointer(coord, 4, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(coord);
-
     setTimeout(function() {
         scdConsoleArea.setAttribute("style", "display:block;");
         scdArea.style.display = "none";
@@ -58,7 +54,7 @@ draw = function() {
     drawSpiral(currentProgram);
     // drawSimplexNoiseField(currentProgram);
     drawCount += drawIncrement;
-};
+}
 
 drawSpiral = function(selectedProgram) {
     vertices = [];
@@ -68,9 +64,19 @@ drawSpiral = function(selectedProgram) {
         let y = Math.sin(i * t) * i * 5e-5;
         vertices.push(x * ratio, y, 15, 0.3);
     }
+    /*======== Associating shaders to buffer objects ========*/
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, dotsVBuf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // Get the attribute location
+    var coord = gl.getAttribLocation(selectedProgram, "coordinates");
+    // Point an attribute to the currently bound VBO
+    gl.vertexAttribPointer(coord, 4, gl.FLOAT, false, 0, 0);
+    // Enable the attribute
+    gl.enableVertexAttribArray(coord);
+    /*============= Drawing the primitive ===============*/
     gl.drawArrays(gl.POINTS, 0, 27000);
-};
+}
 
 
 drawSimplexNoiseField = function(selectedProgram) {
@@ -82,17 +88,20 @@ drawSimplexNoiseField = function(selectedProgram) {
         for (let y = 0; y < (dotAmount * ratio); y++) {
            let n = (openSimplex.noise3D(x * 0.1, y * 0.1, t) + 1) * 0.5;
            vertices.push((x / dotAmount - 0.5) * 1.95, (y / dotAmount / ratio - 0.5) * 1.95, 50 * n, 0.3);
-           // vertices.push((x / dotAmount - 0.5) * 2.5 * (1 - y / (dotAmount * ratio) * 0.45), (y / dotAmount / ratio - 0.5) * 1.75 + n * 0.2 - 0.1, 50 * n, 0.3);
         }
     }
+    /*======== Associating shaders to buffer objects ========*/
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, dotsVBuf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // Get the attribute location
+    var coord = gl.getAttribLocation(selectedProgram, "coordinates");
+    // Point an attribute to the currently bound VBO
+    gl.vertexAttribPointer(coord, 4, gl.FLOAT, false, 0, 0);
+    // Enable the attribute
+    gl.enableVertexAttribArray(coord);
+    /*============= Drawing the primitive ===============*/
     gl.drawArrays(gl.POINTS, 0, vertices.length / 4);
-};
-
-function setResolution(r) {
-    resolution = r;
-    cnvs.width = window.innerWidth * resolution;
-    cnvs.height = window.innerHeight * resolution;
 }
 
 function keyPressed() {

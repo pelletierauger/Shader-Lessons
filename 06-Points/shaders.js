@@ -1,6 +1,7 @@
-let newFlickering = new ShaderProgram("new-flickering-dots");
+let resetShader = false;
+let smoothDots = new ShaderProgram("smooth-dots");
 
-newFlickering.vertText = `
+smoothDots.vertText = `
     // beginGLSL
     attribute vec4 coordinates;
     varying vec2 myposition;
@@ -16,7 +17,7 @@ newFlickering.vertText = `
     }
     // endGLSL
 `;
-newFlickering.fragText = `
+smoothDots.fragText = `
     // beginGLSL
     precision mediump float;
     varying vec2 myposition;
@@ -52,4 +53,9 @@ newFlickering.fragText = `
     }
     // endGLSL
 `;
-newFlickering.init();
+smoothDots.init();
+if (resetShader){
+    currentProgram = getProgram("smooth-dots");
+    gl.useProgram(currentProgram);
+}
+resetShader = true;
