@@ -47,6 +47,52 @@ function setup() {
         displayMode = "js";
         javaScriptEditor.cm.refresh();
     }, 1);
+    setTimeout( function() {
+        // keysControl.style.cursor = 'none';
+        keysControl.addEventListener("mouseenter", function(event) {
+        document.body.style.cursor = "none";
+        document.body.style.backgroundColor = "#000000";
+        appControl.setAttribute("style", "display:none;");
+        let tabs = document.querySelector("#file-tabs");
+        tabs.setAttribute("style", "display:none;");
+        // let slider = document.querySelector("#timeline-slider");
+        // slider.setAttribute("style", "display:none;");
+        // slider.style.display = "none";
+        // canvasDOM.style.bottom = "0";
+        cinemaMode = true;
+        scdArea.style.display = "none";
+        scdConsoleArea.style.display = "none";
+        jsArea.style.display = "none";
+        jsConsoleArea.style.display = "none";
+    }, false);
+    keysControl.addEventListener("mouseleave", function(event) {
+            if (!grimoire) {
+                document.body.style.cursor = "default";
+                document.body.style.backgroundColor = "#1C1C1C";
+                appControl.setAttribute("style", "display:block;");
+                let tabs = document.querySelector("#file-tabs");
+                tabs.setAttribute("style", "display:block;");
+                // let slider = document.querySelector("#timeline-slider");
+                // slider.setAttribute("style", "display:block;");
+                // slider.style.display = "block";
+                // canvasDOM.style.bottom = null;
+                if (displayMode === "both") {
+                    scdArea.style.display = "block";
+                    scdConsoleArea.style.display = "block";
+                    jsArea.style.display = "block";
+                    jsConsoleArea.style.display = "block";
+                } else if (displayMode == "scd") {
+                    scdArea.style.display = "block";
+                    scdConsoleArea.style.display = "block";
+                } else if (displayMode == "js") {
+                    jsArea.style.display = "block";
+                    jsConsoleArea.style.display = "block";
+                }
+                cinemaMode = false;
+                clearSelection();
+            }   
+        }, false);
+    }, 1);
     ratio = window.innerHeight / window.innerWidth; 
     if (!looping) {
         noLoop();
