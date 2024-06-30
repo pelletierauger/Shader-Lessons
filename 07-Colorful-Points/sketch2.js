@@ -136,11 +136,6 @@ drawSpiral = function(selectedProgram) {
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
     // -------------------------------------------
-    // Updating the resolution uniform
-    // -------------------------------------------
-    resolutionUniformLocation = gl.getUniformLocation(currentProgram, "resolution");
-    gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
-    // -------------------------------------------
     // Drawing
     // -------------------------------------------
     gl.drawArrays(gl.POINTS, 0, n);

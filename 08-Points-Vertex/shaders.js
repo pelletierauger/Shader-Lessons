@@ -33,8 +33,13 @@ smoothDotsVertex.fragText = `
 smoothDotsVertex.vertText = smoothDotsVertex.vertText.replace(/[^\x00-\x7F]/g, "");
 smoothDotsVertex.fragText = smoothDotsVertex.fragText.replace(/[^\x00-\x7F]/g, "");
 smoothDotsVertex.init();
-
-
+if (shadersReadyToInitiate) {
+    currentProgram = smoothDotsVertex.program;
+    gl.useProgram(currentProgram);
+    resolutionUniformLocation = gl.getUniformLocation(currentProgram, "resolution");
+    gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
+    timeUniformLocation = gl.getUniformLocation(currentProgram, "time");
+}
 
 if (false) {
 
@@ -82,6 +87,10 @@ smoothDotsVertex.fragText = `
 smoothDotsVertex.vertText = smoothDotsVertex.vertText.replace(/[^\x00-\x7F]/g, "");
 smoothDotsVertex.fragText = smoothDotsVertex.fragText.replace(/[^\x00-\x7F]/g, "");
 smoothDotsVertex.init();
-
+currentProgram = smoothDotsVertex.program;
+gl.useProgram(currentProgram);
+resolutionUniformLocation = gl.getUniformLocation(currentProgram, "resolution");
+gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
+timeUniformLocation = gl.getUniformLocation(currentProgram, "time");
 
 }

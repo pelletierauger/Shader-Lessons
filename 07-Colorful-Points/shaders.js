@@ -31,7 +31,12 @@ smoothDots.fragText = `
 smoothDots.vertText = smoothDots.vertText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.fragText = smoothDots.fragText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.init();
-
+if (shadersReadyToInitiate) {
+    currentProgram = smoothDots.program;
+    gl.useProgram(currentProgram);
+    resolutionUniformLocation = gl.getUniformLocation(currentProgram, "resolution");
+    gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
+}
 
 if (false) {
 
@@ -67,6 +72,10 @@ smoothDots.fragText = `
 smoothDots.vertText = smoothDots.vertText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.fragText = smoothDots.fragText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.init();
+currentProgram = smoothDots.program;
+gl.useProgram(currentProgram);
+resolutionUniformLocation = gl.getUniformLocation(currentProgram, "resolution");
+gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
 
 // Defining the colors of the dots inside the vertex shader.
 smoothDots.vertText = `
@@ -86,7 +95,8 @@ smoothDots.vertText = `
         c = vec4(vec3(0.0), 1.0);
         c.r = 1.0 - length(pos);
         c.g = abs(atan(pos.y, pos.x) / pi);
-        c.b = sin(c.r * 20.) * 0.5 + 0.5;
+        c.b = sin(c.r * 19. + 3.) * 0.5 + 0.5;
+        c.r *= 1.125;
     }
     // endGLSL
 `;
@@ -108,5 +118,9 @@ smoothDots.fragText = `
 smoothDots.vertText = smoothDots.vertText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.fragText = smoothDots.fragText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.init();
+currentProgram = smoothDots.program;
+gl.useProgram(currentProgram);
+resolutionUniformLocation = gl.getUniformLocation(currentProgram, "resolution");
+gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
 
 }

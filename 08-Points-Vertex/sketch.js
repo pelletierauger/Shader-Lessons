@@ -2,7 +2,7 @@ let looping = true;
 let keysActive = true;
 let socket, cnvs, gl, shaderProgram, time;
 let drawCount = 0, drawIncrement = 1;
-let resolutionUniformLocation;
+let resolutionUniformLocation, timeUniformLocation;
 let vertexIDAttribLocation;
 let positions, colors;
 let currentProgram;
@@ -41,7 +41,20 @@ function setup() {
     gl.useProgram(currentProgram);
 
     vertexIDAttribLocation = gl.getAttribLocation(currentProgram, "vertexID");
-
+    // -------------------------------------------
+    // Updating the indices buffer
+    // -------------------------------------------
+    gl.bindBuffer(gl.ARRAY_BUFFER, indicesBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+    // Point an attribute to the currently bound VBO
+    gl.vertexAttribPointer(vertexIDAttribLocation, 1, gl.FLOAT, false, 0, 0);
+    // Enable the attribute
+    gl.enableVertexAttribArray(vertexIDAttribLocation);
+    
+    resolutionUniformLocation = gl.getUniformLocation(smoothDotsVertex.program, "resolution");
+    gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
+    timeUniformLocation = gl.getUniformLocation(smoothDotsVertex.program, "time");
+    
     setTimeout(function() {
         scdConsoleArea.setAttribute("style", "display:block;");
         scdArea.style.display = "none";
@@ -101,30 +114,7 @@ draw = function() {
 };
 
 drawSpiral = function(selectedProgram) {
-    // -------------------------------------------
-    // Updating the indices buffer
-    // -------------------------------------------
-    gl.bindBuffer(gl.ARRAY_BUFFER, indicesBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-    // Get the attribute location
-
-    // Point an attribute to the currently bound VBO
-    gl.vertexAttribPointer(vertexIDAttribLocation, 1, gl.FLOAT, false, 0, 0);
-    // Enable the attribute
-    gl.enableVertexAttribArray(vertexIDAttribLocation);    
-    // -------------------------------------------
-    // Updating the resolution uniform
-    // -------------------------------------------
-    resolutionUniformLocation = gl.getUniformLocation(currentProgram, "resolution");
-    gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
-        // -------------------------------------------
-    // Updating the time uniform
-    // -------------------------------------------
-    var time = gl.getUniformLocation(selectedProgram, "time");
-    gl.uniform1f(time, drawCount);
-    // -------------------------------------------
-    // Drawing
-    // -------------------------------------------
+    gl.uniform1f(timeUniformLocation, drawCount);
     gl.drawArrays(gl.POINTS, 0, 100000);
 };
 
