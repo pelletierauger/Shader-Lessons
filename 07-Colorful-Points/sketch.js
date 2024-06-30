@@ -7,8 +7,6 @@ let positionAttribLocation, colorAttribLocation;
 let positions, colors;
 let currentProgram;
 let ratio;
-const seed = 10;
-const openSimplex = openSimplexNoise(seed);
 let resolution = 1;
 
 function setup() {
@@ -36,7 +34,6 @@ function setup() {
 
     currentProgram = getProgram("smooth-dots");
     gl.useProgram(currentProgram);
-
     positionAttribLocation = gl.getAttribLocation(currentProgram, "position");
     colorAttribLocation = gl.getAttribLocation(currentProgram, "color");
 
@@ -92,8 +89,9 @@ function setup() {
 
 draw = function() {
     gl.clear(gl.COLOR_BUFFER_BIT);
+    currentProgram = getProgram("smooth-dots");
+    gl.useProgram(currentProgram);
     drawSpiral(currentProgram);
-    // drawSimplexNoiseField(currentProgram);
     drawCount += drawIncrement;
 };
 
@@ -115,23 +113,19 @@ drawSpiral = function(selectedProgram) {
         colors.push(r, g, b, a);
     }
     // -------------------------------------------
-    // Updating the buffer data
+    // Updating the position data
     // -------------------------------------------
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-    // -------------------------------------------
-    // Associating shaders to buffer objects
-    // -------------------------------------------
-    // Bind the position buffer
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     // Point an attribute to the currently bound buffer
     gl.vertexAttribPointer(positionAttribLocation, 3, gl.FLOAT, false, 0, 0);
     // Enable the position attribute
     gl.enableVertexAttribArray(positionAttribLocation);
-    // Bind the color buffer
+    // -------------------------------------------
+    // Updating the color data
+    // -------------------------------------------
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
     // Point an attribute to the currently bound buffer
     gl.vertexAttribPointer(colorAttribLocation, 4, gl.FLOAT, false, 0, 0);
     // Enable the color attribute
@@ -140,23 +134,6 @@ drawSpiral = function(selectedProgram) {
     // Drawing
     // -------------------------------------------
     gl.drawArrays(gl.POINTS, 0, n);
-};
-
-
-drawSimplexNoiseField = function(selectedProgram) {
-    vertices = [];
-    let t = drawCount * 0.5e-1;
-    let dotAmount = 30000;
-    dotAmount = Math.sqrt(dotAmount);
-    for (let x = 0; x < dotAmount; x++) {
-        for (let y = 0; y < (dotAmount * ratio); y++) {
-           let n = (openSimplex.noise3D(x * 0.1, y * 0.1, t) + 1) * 0.5;
-           vertices.push((x / dotAmount - 0.5) * 1.95, (y / dotAmount / ratio - 0.5) * 1.95, 50 * n, 0.3);
-           // vertices.push((x / dotAmount - 0.5) * 2.5 * (1 - y / (dotAmount * ratio) * 0.45), (y / dotAmount / ratio - 0.5) * 1.75 + n * 0.2 - 0.1, 50 * n, 0.3);
-        }
-    }
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    gl.drawArrays(gl.POINTS, 0, vertices.length / 4);
 };
 
 function setResolution(r) {

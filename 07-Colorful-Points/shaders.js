@@ -1,4 +1,3 @@
-let resetShader = false;
 let smoothDots = new ShaderProgram("smooth-dots");
 
 smoothDots.vertText = `
@@ -28,9 +27,6 @@ smoothDots.fragText = `
     }
     // endGLSL
 `;
+smoothDots.vertText = smoothDots.vertText.replace(/[^\x00-\x7F]/g, "");
+smoothDots.fragText = smoothDots.fragText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.init();
-if (resetShader){
-    currentProgram = getProgram("smooth-dots");
-    gl.useProgram(currentProgram);
-}
-resetShader = true;
