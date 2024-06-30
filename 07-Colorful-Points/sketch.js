@@ -3,7 +3,7 @@ let keysActive = true;
 let socket, cnvs, gl, shaderProgram, time;
 let drawCount = 0, drawIncrement = 1;
 let positionBuffer, colorBuffer;
-let positionAttribLocation, colorAttribLocation;
+let positionAttribLocation, colorAttribLocation, resolutionUniformLocation;
 let positions, colors;
 let currentProgram;
 let ratio;
@@ -36,6 +36,9 @@ function setup() {
     gl.useProgram(currentProgram);
     positionAttribLocation = gl.getAttribLocation(currentProgram, "position");
     colorAttribLocation = gl.getAttribLocation(currentProgram, "color");
+
+    resolutionUniformLocation = gl.getUniformLocation(currentProgram, "resolution");
+    gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
 
     setTimeout(function() {
         scdConsoleArea.setAttribute("style", "display:block;");
@@ -130,6 +133,11 @@ drawSpiral = function(selectedProgram) {
     gl.vertexAttribPointer(colorAttribLocation, 4, gl.FLOAT, false, 0, 0);
     // Enable the color attribute
     gl.enableVertexAttribArray(colorAttribLocation);
+    // -------------------------------------------
+    // Updating the resolution uniform
+    // -------------------------------------------
+    resolutionUniformLocation = gl.getUniformLocation(currentProgram, "resolution");
+    gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
     // -------------------------------------------
     // Drawing
     // -------------------------------------------
