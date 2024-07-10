@@ -115,7 +115,8 @@ draw = function() {
 
 drawSpiral = function(selectedProgram) {
     gl.uniform1f(timeUniformLocation, drawCount);
-    gl.drawArrays(gl.POINTS, 0, 100000);
+    // 57600 = (240 * 240)
+    gl.drawArrays(gl.POINTS, 0, 57600);
 };
 
 function setResolution(r) {
