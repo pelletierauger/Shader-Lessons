@@ -277,27 +277,28 @@ smoothDotsVertex.vertText = `
         0.54030, -0.84147
     );
     float hash(in float n) {
-      return fract(sin(n)*43758.5453);
+      return fract(sin(n) * 43758.5453);
     }
     float noise(in vec2 x) {
         vec2 p = floor(x);
         vec2 f = fract(x);
-        f = f*f*(3.0-2.0*f);  
-        float n = p.x + p.y*57.0;
-        float res = mix(mix( hash(n+  0.0), hash(n+  1.0),f.x),
-              mix( hash(n+ 57.0), hash(n+ 58.0),f.x),f.y);
+        f = f * f * (3.0 - 2.0 * f);  
+        float n = p.x + p.y * 57.0;
+        float res = mix(
+              mix(hash(n +  0.0), hash(n +  1.0), f.x),
+              mix(hash(n + 57.0), hash(n + 58.0), f.x), f.y);
         return res;
     }
     float fbm( in vec2 p ) {
         float f;
-        f  = 0.5000*noise( p ); p = mr*p*2.02;
-        f += 0.2500*noise( p ); p = mr*p*2.33;
-        f += 0.1250*noise( p ); p = mr*p*2.01;
-        f += 0.0625*noise( p ); p = mr*p*5.21;
-        return f/(0.9375)*smoothstep( 260., 768., p.y ); // flat at beginning
+        f  = 0.5000 * noise(p); p = mr * p * 2.02;
+        f += 0.2500 * noise(p); p = mr * p * 2.33;
+        f += 0.1250 * noise(p); p = mr * p * 2.01;
+        f += 0.0625 * noise(p); p = mr * p * 5.21;
+        return f / (0.9375) * smoothstep(260., 768., p.y); // flat at beginning
     }
     float rand(vec2 co){
-        return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453 * (2.0 + sin(co.x)));
+        return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453 * (2.0 + sin(co.x)));
     }
     float map(float value, float min1, float max1, float min2, float max2) {
         return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
